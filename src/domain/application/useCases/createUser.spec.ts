@@ -3,7 +3,7 @@ import { CreateUserUseCase } from './createUser'
 import { makeUser } from 'test/factories/makeUser'
 import { UserAlreadyExistsError } from '../_errors/userAlreadyExistsError'
 import { InMemoryHasher } from 'test/cryptography/InMemoryHasher'
-import { randomUUID } from 'crypto'
+import { randomUUID } from 'node:crypto'
 import { UserParentNotFoundError } from '../_errors/userParentNotFoundError'
 
 let repository: InMemoryUsersRepository

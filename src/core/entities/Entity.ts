@@ -1,15 +1,15 @@
-import { randomUUID } from "node:crypto"
+import { randomUUID } from 'node:crypto'
 
 export abstract class Entity<Props> {
   private _id: string
   protected props: Props
 
-  get id(){
+  get id() {
     return this._id
   }
 
-  protected constructor(props: Props, id?: string){
-    this._id =  id ?? randomUUID()
+  protected constructor(props: Props, id?: string) {
+    this._id = id ?? randomUUID()
     this.props = props
   }
 }

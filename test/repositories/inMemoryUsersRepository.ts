@@ -34,6 +34,12 @@ export class InMemoryUsersRepository implements IUsersRepository {
     return user
   }
 
+  async findManyByParentId(parentId: string): Promise<User[]> {
+    const users = this.items.filter((item) => item.parentUserId === parentId)
+
+    return users
+  }
+
   async delete(userId: string): Promise<void> {
     const userIndex = this.items.findIndex((item) => item.id === userId)
 

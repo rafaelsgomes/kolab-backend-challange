@@ -5,5 +5,6 @@ export abstract class IUsersRepository {
   abstract save(user: User): Promise<void>
   abstract findByUseName(userName: string): Promise<User | null>
   abstract findById(userId: string): Promise<User | null>
+  abstract findManyByParentId(parentId: string): Promise<User[]>
   abstract delete(userId: string): Promise<void>
 }

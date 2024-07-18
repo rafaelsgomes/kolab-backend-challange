@@ -1,6 +1,6 @@
 import { User, UserProps } from '@/domain/entities/User'
 import { faker } from '@faker-js/faker'
-import { randomUUID } from 'crypto'
+import { randomUUID } from 'node:crypto'
 
 export function makeUser(override: Partial<UserProps> = {}, id?: string) {
   const user = User.create(
