@@ -3,7 +3,7 @@
   "rules": {
     "no-useless-constructor": "off",
     "no-new": "off",
-    "no-unused-vars": "warn",
+    "no-unused-vars": "error",
     "accessor-pairs":"off",
     "@typescript-eslint/no-explicit-any": "off"
   }

@@ -1,7 +1,7 @@
-import { IError } from "@/core/errors/IError";
+import { IError } from '@/core/errors/IError'
 
 export class UserParentNotFoundError extends Error implements IError {
-  constructor(){
+  constructor() {
     super(`User parent not found.`)
   }
 }
