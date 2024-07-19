@@ -1,6 +1,6 @@
 import { UserAlreadyExistsError } from '@/domain/application/_errors/userAlreadyExistsError'
 import { UserParentNotFoundError } from '@/domain/application/_errors/userParentNotFoundError'
-import { CreateUserUseCase } from '@/domain/application/useCases/createUser'
+import { UpdateUserUseCase } from '@/domain/application/useCases/updateUser'
 import {
   BadRequestException,
   Body,
@@ -8,38 +8,42 @@ import {
   Controller,
   HttpCode,
   NotFoundException,
-  Post,
-  UsePipes,
+  Put,
 } from '@nestjs/common'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipe/zodValidationPipe'
-import { Public } from '@/infra/auth/public'
+import { CurrentUser } from '@/infra/auth/currentUser.decorator'
+import { userPayload } from '@/infra/auth/jwtStrategy'
 
-const createUserBodySchema = z.object({
+const updateUserBodySchema = z.object({
   name: z.string().max(200),
   userName: z.string().max(200),
   password: z.string().max(200),
   parentUserId: z.string().uuid().optional(),
 })
 
-type createUserBody = z.infer<typeof createUserBodySchema>
+const bodyValidationPipe = new ZodValidationPipe(updateUserBodySchema)
 
-@Public()
-@Controller('/register')
-export class CreateUserController {
-  constructor(private useCase: CreateUserUseCase) {}
-  @Post()
-  @HttpCode(201)
-  @UsePipes(new ZodValidationPipe(createUserBodySchema))
-  async handle(@Body() body: createUserBody) {
+type updateUserBody = z.infer<typeof updateUserBodySchema>
+
+@Controller()
+export class UpdatedUserController {
+  constructor(private useCase: UpdateUserUseCase) {}
+  @Put()
+  @HttpCode(204)
+  async handle(
+    @CurrentUser() user: userPayload,
+    @Body(bodyValidationPipe) body: updateUserBody,
+  ) {
     try {
       const { name, parentUserId, password, userName } = body
-
+      const { sub: userId } = user
       await this.useCase.execute({
         name,
         password,
         userName,
-        parentUserId,
+        parentId: parentUserId,
+        userId,
       })
     } catch (error) {
       switch (error.constructor) {
