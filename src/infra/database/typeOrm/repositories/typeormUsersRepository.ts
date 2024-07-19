@@ -4,14 +4,14 @@ import { User as TypeormUser } from '../entities/User.entity'
 import { Injectable } from '@nestjs/common'
 import { Repository } from 'typeorm'
 import { TypeormUserMapper } from '../mappers/typeormUserMapper'
-import { InjectRepository } from '@nestjs/typeorm'
+import { TypeormService } from '../../typeorm.service'
 
 @Injectable()
 export class TypeormUsersRepository implements IUsersRepository {
-  constructor(
-    @InjectRepository(TypeormUser)
-    private repository: Repository<TypeormUser>,
-  ) {}
+  private repository: Repository<TypeormUser>
+  constructor(private typeormService: TypeormService) {
+    this.repository = this.typeormService.getRepository(TypeormUser)
+  }
 
   async create(user: User): Promise<void> {
     await this.repository.save(TypeormUserMapper.toDatabase(user))
@@ -21,7 +21,7 @@ export class TypeormUsersRepository implements IUsersRepository {
     await this.repository.update(user.id, TypeormUserMapper.toDatabase(user))
   }
 
-  async findByUseName(userName: string): Promise<User | null> {
+  async findByUserName(userName: string): Promise<User | null> {
     const user = await this.repository.findOne({ where: { userName } })
 
     if (!user) {

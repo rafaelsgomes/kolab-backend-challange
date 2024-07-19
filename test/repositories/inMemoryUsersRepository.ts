@@ -14,7 +14,7 @@ export class InMemoryUsersRepository implements IUsersRepository {
     this.items[userIndex] = user
   }
 
-  async findByUseName(userName: string): Promise<User | null> {
+  async findByUserName(userName: string): Promise<User | null> {
     const user = this.items.find((item) => item.userName === userName)
 
     if (!user) {

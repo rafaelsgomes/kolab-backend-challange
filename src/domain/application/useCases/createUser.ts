@@ -29,7 +29,8 @@ export class CreateUserUseCase {
     password,
     parentUserId,
   }: CreateUserUseCaseRequest): Promise<CreateUserUseCaseResponse> {
-    const userAlreadyExists = await this.usersRepository.findByUseName(userName)
+    const userAlreadyExists =
+      await this.usersRepository.findByUserName(userName)
 
     if (userAlreadyExists) {
       throw new UserAlreadyExistsError(userName)

@@ -1,5 +1,5 @@
 import { InMemoryUsersRepository } from 'test/repositories/inMemoryUsersRepository'
-import { AuthenticateUserUseCase } from './authenticateUse'
+import { AuthenticateUserUseCase } from './authenticateUser'
 import { makeUser } from 'test/factories/makeUser'
 import { InMemoryHasher } from 'test/cryptography/InMemoryHasher'
 import { InMemoryEncrypter } from 'test/cryptography/InMemoryEncrypter'

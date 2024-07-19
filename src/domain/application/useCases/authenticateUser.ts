@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common'
 import { InvalidCredentialsError } from '../_errors/invalidCredentialsError'
 import { IEncrypter } from '../cryptography/IEncrypter'
 import { IHasher } from '../cryptography/IHasher'
@@ -12,6 +13,7 @@ type AuthenticateUserUseCaseResponse = {
   token: string
 }
 
+@Injectable()
 export class AuthenticateUserUseCase {
   constructor(
     private usersRepository: IUsersRepository,
@@ -23,7 +25,7 @@ export class AuthenticateUserUseCase {
     userName,
     password,
   }: AuthenticateUserUseCaseRequest): Promise<AuthenticateUserUseCaseResponse> {
-    const user = await this.usersRepository.findByUseName(userName)
+    const user = await this.usersRepository.findByUserName(userName)
 
     if (!user) {
       throw new InvalidCredentialsError()

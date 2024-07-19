@@ -4,6 +4,7 @@ import { envSchema } from './infra/env/env'
 import { DatabaseModule } from './infra/database/database.module'
 import { UsersHttpModule } from './infra/http/controllers/usersHttpModule'
 import { RouterModule } from '@nestjs/core'
+import { AuthModule } from './infra/auth/auth.module'
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { RouterModule } from '@nestjs/core'
       isGlobal: true,
     }),
     DatabaseModule,
+    AuthModule,
     UsersHttpModule,
     RouterModule.register([
       {

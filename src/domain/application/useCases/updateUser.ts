@@ -37,7 +37,7 @@ export class UpdateUserUseCase {
 
     if (userName !== user.userName) {
       const userAlreadyExists =
-        await this.usersRepository.findByUseName(userName)
+        await this.usersRepository.findByUserName(userName)
 
       if (userAlreadyExists) {
         throw new UserAlreadyExistsError(userName)

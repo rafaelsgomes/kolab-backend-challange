@@ -1,21 +1,21 @@
 import request from 'supertest'
 import { AppModule } from '@/app.module'
 import { DatabaseModule } from '@/infra/database/database.module'
-import { User } from '@/infra/database/typeOrm/entities/User.entity'
 import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
-import { Repository } from 'typeorm'
+import { TypeormService } from '@/infra/database/typeorm.service'
+import { User } from '@/infra/database/typeOrm/entities/User.entity'
 
 describe('Create User (E2E)', () => {
   let app: INestApplication
-  let repository: Repository<User>
+  let typeormService: TypeormService
   beforeAll(async () => {
     const appModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
     }).compile()
 
-    repository = appModule.get('UserRepository')
     app = appModule.createNestApplication()
+    typeormService = appModule.get(TypeormService)
 
     await app.init()
   })
@@ -30,7 +30,9 @@ describe('Create User (E2E)', () => {
       })
 
     expect(response.statusCode).toEqual(201)
-    const userOnDatabase = await repository.findOneBy({ userName: 'johnDoe' })
+    const userOnDatabase = await typeormService
+      .getRepository(User)
+      .findOneBy({ userName: 'johnDoe' })
 
     expect(userOnDatabase).toBeTruthy()
   })
