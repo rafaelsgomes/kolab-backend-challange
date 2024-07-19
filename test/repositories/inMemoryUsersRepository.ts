@@ -1,5 +1,6 @@
 import { IUsersRepository } from '@/domain/application/repositories/IUsersRepository'
 import { User } from '@/domain/entities/User'
+import { ParentTreeDetails } from '@/domain/entities/valueObjects/ParentTreeDetails'
 
 export class InMemoryUsersRepository implements IUsersRepository {
   public items: User[] = []
@@ -34,10 +35,26 @@ export class InMemoryUsersRepository implements IUsersRepository {
     return user
   }
 
-  async findManyByParentId(parentId: string): Promise<User[]> {
+  async findManyByParentId(parentId: string): Promise<ParentTreeDetails> {
+    const parent = this.items.find((item) => item.id === parentId)
     const users = this.items.filter((item) => item.parentUserId === parentId)
 
-    return users
+    const parentTreeDetails = ParentTreeDetails.create({
+      parent: {
+        name: parent.name,
+        userName: parent.userName,
+      },
+      subordinates: users.map((item) => {
+        return {
+          name: item.name,
+          userName: item.userName,
+          createdAt: item.createdAt,
+          updatedAt: item.updatedAt,
+        }
+      }),
+    })
+
+    return parentTreeDetails
   }
 
   async delete(userId: string): Promise<void> {

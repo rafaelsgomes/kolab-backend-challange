@@ -5,6 +5,7 @@ import { Injectable } from '@nestjs/common'
 import { Repository } from 'typeorm'
 import { TypeormUserMapper } from '../mappers/typeormUserMapper'
 import { TypeormService } from '../../typeorm.service'
+import { ParentTreeDetails } from '@/domain/entities/valueObjects/ParentTreeDetails'
 
 @Injectable()
 export class TypeormUsersRepository implements IUsersRepository {
@@ -41,12 +42,39 @@ export class TypeormUsersRepository implements IUsersRepository {
     return TypeormUserMapper.toDomain(user)
   }
 
-  async findManyByParentId(parentId: string): Promise<User[]> {
-    const users = await this.repository.find({
-      where: { parentUserId: parentId },
+  async findManyByParentId(parentId: string): Promise<ParentTreeDetails> {
+    const { schema } = this.typeormService.options
+    const user: TypeormUser = await this.repository.query(
+      `
+    SELECT * FROM "${schema}"."users" WHERE "id" = $1
+  `,
+      [parentId],
+    )
+
+    const subordinates: TypeormUser[] = await this.repository.query(
+      `
+    SELECT * FROM "${schema}"."users" WHERE "parentUserId" = $1
+  `,
+      [parentId],
+    )
+
+    const parent = user[0]
+    const details = ParentTreeDetails.create({
+      parent: {
+        name: parent.name,
+        userName: parent.userName,
+      },
+      subordinates: subordinates.map((item) => {
+        return {
+          name: item.name,
+          userName: item.userName,
+          createdAt: item.createdAt,
+          updatedAt: item.updatedAt ?? null,
+        }
+      }),
     })
 
-    return users.map(TypeormUserMapper.toDomain)
+    return details
   }
 
   async delete(userId: string): Promise<void> {

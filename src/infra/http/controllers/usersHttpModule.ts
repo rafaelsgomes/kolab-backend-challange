@@ -11,6 +11,8 @@ import { DeleteUserController } from './deleteUser.controller'
 import { DeleteUserUseCase } from '@/domain/application/useCases/deleteUser'
 import { UpdatedUserController } from './updateUser.controller'
 import { UpdateUserUseCase } from '@/domain/application/useCases/updateUser'
+import { FetchParentTreeController } from './fetchParentTree.controller'
+import { FetchParentTreeUseCase } from '@/domain/application/useCases/fetchParentTree'
 
 @Module({
   imports: [DatabaseModule, cryptographyModule],
@@ -20,6 +22,7 @@ import { UpdateUserUseCase } from '@/domain/application/useCases/updateUser'
     GetUserByIdController,
     DeleteUserController,
     UpdatedUserController,
+    FetchParentTreeController,
   ],
   providers: [
     CreateUserUseCase,
@@ -27,6 +30,7 @@ import { UpdateUserUseCase } from '@/domain/application/useCases/updateUser'
     GetUserByIdUseCase,
     DeleteUserUseCase,
     UpdateUserUseCase,
+    FetchParentTreeUseCase,
   ],
 })
 export class UsersHttpModule {}
