@@ -5,10 +5,12 @@ import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import { UserFactory } from 'test/factories/makeUser'
 import { hash } from 'bcryptjs'
+import { JwtService } from '@nestjs/jwt'
 
-describe('Authenticate User (E2E)', () => {
+describe('Get User (E2E)', () => {
   let app: INestApplication
   let userFactory: UserFactory
+  let jwtService: JwtService
   beforeAll(async () => {
     const appModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
@@ -17,30 +19,31 @@ describe('Authenticate User (E2E)', () => {
 
     app = appModule.createNestApplication()
     userFactory = appModule.get(UserFactory)
+    jwtService = appModule.get(JwtService)
 
     await app.init()
   })
 
-  test('[POST] /users/authenticate', async () => {
-    await userFactory.makeTypeormUser({
+  test('[GET] /users/:userId', async () => {
+    const user = await userFactory.makeTypeormUser({
       name: 'John Doe',
       userName: 'johnDoe',
       password: await hash('password123', 8),
     })
 
-    const response = await request(app.getHttpServer())
-      .post('/users/authenticate')
-      .send({
-        userName: 'johnDoe',
-        password: 'password123',
-      })
+    const token = jwtService.sign({ sub: user.id })
 
-    expect(response.statusCode).toEqual(201)
-    expect(response.body.access_token).toEqual(expect.any(String))
-    expect(response.body.expiresIn).toEqual(expect.any(String))
-    expect(
-      response.headers['set-cookie'][0].includes('access_token'),
-    ).toBeTruthy()
+    const response = await request(app.getHttpServer())
+      .get(`/users/${user.id}`)
+      .set('Cookie', `access_token=${token}`)
+      .send()
+
+    expect(response.statusCode).toEqual(200)
+    expect(response.body.user).toEqual(
+      expect.objectContaining({
+        name: 'John Doe',
+      }),
+    )
   })
   afterAll(async () => {
     await app.close()

@@ -9,7 +9,7 @@ const userPayloadSchema = z.object({
   sub: z.string().uuid(),
 })
 
-type userPayload = z.infer<typeof userPayloadSchema>
+export type userPayload = z.infer<typeof userPayloadSchema>
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -27,10 +27,24 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   private static extractJwtFromCookies(request: Request): string | null {
-    return request.cookies &&
-      'access_token' in request.cookies &&
-      request.cookies.access_token.length > 0
-      ? request.cookies.access_token
+    if (!request.headers.cookie) {
+      return null
+    }
+    const cookies = request.headers.cookie
+      .split(';')
+      .map((cookie) => cookie.trim())
+      .reduce(
+        (cookies, cookie) => {
+          const [name, ...rest] = cookie.split('=')
+          const value = rest.join('=')
+          cookies[name] = decodeURIComponent(value)
+          return cookies
+        },
+        {} as { [key: string]: string },
+      )
+
+    return 'access_token' in cookies && cookies.access_token.length > 0
+      ? cookies.access_token
       : null
   }
 

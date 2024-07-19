@@ -1,19 +1,18 @@
-import { UserAlreadyExistsError } from '@/domain/application/_errors/userAlreadyExistsError'
-import { UserParentNotFoundError } from '@/domain/application/_errors/userParentNotFoundError'
 import { AuthenticateUserUseCase } from '@/domain/application/useCases/authenticateUser'
 import {
   BadRequestException,
   Body,
-  ConflictException,
   Controller,
   HttpCode,
-  NotFoundException,
   Post,
   Res,
+  UnauthorizedException,
   UsePipes,
 } from '@nestjs/common'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipe/zodValidationPipe'
+import { InvalidCredentialsError } from '@/domain/application/_errors/invalidCredentialsError'
+import { Public } from '@/infra/auth/public'
 
 const authenticateUserBodySchema = z.object({
   userName: z.string().max(200),
@@ -22,6 +21,7 @@ const authenticateUserBodySchema = z.object({
 
 type authenticateUserBody = z.infer<typeof authenticateUserBodySchema>
 
+@Public()
 @Controller('/authenticate')
 export class AuthenticateUserController {
   constructor(private useCase: AuthenticateUserUseCase) {}
@@ -53,10 +53,8 @@ export class AuthenticateUserController {
       }
     } catch (error) {
       switch (error.constructor) {
-        case UserAlreadyExistsError:
-          throw new ConflictException(error.message)
-        case UserParentNotFoundError:
-          throw new NotFoundException(error.message)
+        case InvalidCredentialsError:
+          throw new UnauthorizedException(error.message)
         default:
           throw new BadRequestException(error.message)
       }

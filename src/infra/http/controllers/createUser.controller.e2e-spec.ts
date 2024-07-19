@@ -36,4 +36,7 @@ describe('Create User (E2E)', () => {
 
     expect(userOnDatabase).toBeTruthy()
   })
+  afterAll(async () => {
+    await app.close()
+  })
 })

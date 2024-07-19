@@ -11,7 +11,6 @@ export const envSchema = z.object({
   DB_PASSWORD: z.string(),
   DB_DATABASE: z.string(),
   DB_SCHEMA: z.string().default('public'),
-  DB_SYNCHRONIZE: z.coerce.boolean().default(false),
 })
 
 export type Env = z.infer<typeof envSchema>

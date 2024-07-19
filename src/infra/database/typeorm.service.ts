@@ -24,17 +24,18 @@ export class TypeormService
     })
   }
 
+  private schema = randomUUID()
+
   async onModuleInit() {
     try {
       const dataSource = await this.initialize()
       console.log('Database connected successfully')
       if (this.env.get('NODE_ENV') === 'test') {
-        const schema = randomUUID()
         const queryRunner = dataSource.createQueryRunner()
-        await queryRunner.query(`CREATE SCHEMA IF NOT EXISTS "${schema}"`)
+        await queryRunner.query(`CREATE SCHEMA IF NOT EXISTS "${this.schema}"`)
         await dataSource.destroy()
         dataSource.setOptions({
-          schema,
+          schema: this.schema,
           synchronize: true,
           dropSchema: true,
         })
@@ -44,7 +45,11 @@ export class TypeormService
     } catch (error) {}
   }
 
-  onModuleDestroy() {
+  async onModuleDestroy() {
+    if (this.env.get('NODE_ENV') === 'test') {
+      const queryRunner = this.createQueryRunner()
+      await queryRunner.query(`DROP SCHEMA IF EXISTS "${this.schema}" CASCADE`)
+    }
     return this.destroy()
   }
 }

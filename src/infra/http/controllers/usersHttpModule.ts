@@ -5,10 +5,16 @@ import { CreateUseController } from './createUser.controller'
 import { cryptographyModule } from '@/infra/cryptography/cryptography.module'
 import { AuthenticateUserController } from './authenticateUser.controller'
 import { AuthenticateUserUseCase } from '@/domain/application/useCases/authenticateUser'
+import { GetUserByIdUseCase } from '@/domain/application/useCases/getUserById'
+import { GetUserByIdController } from './getUserById.controller'
 
 @Module({
   imports: [DatabaseModule, cryptographyModule],
-  controllers: [CreateUseController, AuthenticateUserController],
-  providers: [CreateUserUseCase, AuthenticateUserUseCase],
+  controllers: [
+    CreateUseController,
+    AuthenticateUserController,
+    GetUserByIdController,
+  ],
+  providers: [CreateUserUseCase, AuthenticateUserUseCase, GetUserByIdUseCase],
 })
 export class UsersHttpModule {}

@@ -1,6 +1,7 @@
 import { User } from '@/domain/entities/User'
 import { IUsersRepository } from '../repositories/IUsersRepository'
 import { UserNotFoundError } from '../_errors/userNotFoundError'
+import { Injectable } from '@nestjs/common'
 
 type FetchParentTreeByUserIdUseCaseRequest = {
   userId: string
@@ -10,6 +11,7 @@ type FetchParentTreeByUserIdUseCaseResponse = {
   users: User[]
 }
 
+@Injectable()
 export class FetchParentTreeByUserIdUseCase {
   constructor(private usersRepository: IUsersRepository) {}
   async execute({

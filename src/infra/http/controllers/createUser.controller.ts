@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipe/zodValidationPipe'
+import { Public } from '@/infra/auth/public'
 
 const createUserBodySchema = z.object({
   name: z.string().max(200),
@@ -23,6 +24,7 @@ const createUserBodySchema = z.object({
 
 type createUserBody = z.infer<typeof createUserBodySchema>
 
+@Public()
 @Controller('/register')
 export class CreateUseController {
   constructor(private useCase: CreateUserUseCase) {}

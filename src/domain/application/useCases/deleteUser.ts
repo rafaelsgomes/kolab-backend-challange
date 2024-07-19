@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common'
 import { IUsersRepository } from '../repositories/IUsersRepository'
 
 type DeleteUserUseCaseRequest = {
@@ -6,6 +7,7 @@ type DeleteUserUseCaseRequest = {
 
 type DeleteUserUseCaseResponse = void
 
+@Injectable()
 export class DeleteUserUseCase {
   constructor(private usersRepository: IUsersRepository) {}
   async execute({

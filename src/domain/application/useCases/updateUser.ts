@@ -3,6 +3,7 @@ import { IUsersRepository } from '../repositories/IUsersRepository'
 import { UserNotFoundError } from '../_errors/userNotFoundError'
 import { IHasher } from '../cryptography/IHasher'
 import { UserAlreadyExistsError } from '../_errors/userAlreadyExistsError'
+import { Injectable } from '@nestjs/common'
 
 type UpdateUserUseCaseRequest = {
   userId: string
@@ -16,6 +17,7 @@ type UpdateUserUseCaseResponse = {
   user: User
 }
 
+@Injectable()
 export class UpdateUserUseCase {
   constructor(
     private usersRepository: IUsersRepository,
