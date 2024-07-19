@@ -19,6 +19,8 @@ import { TypeormUsersRepository } from './typeOrm/repositories/typeormUsersRepos
           username: env.get('DB_USER'),
           password: env.get('DB_PASSWORD'),
           database: env.get('DB_DATABASE'),
+          schema: env.get('DB_SCHEMA'),
+          dropSchema: env.get('NODE_ENV') === 'test',
           entities: [User],
           synchronize: env.get('DB_SYNCHRONIZE'),
         }
