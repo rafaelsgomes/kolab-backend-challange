@@ -3,6 +3,7 @@ import { IUsersRepository } from '../repositories/IUsersRepository'
 import { UserAlreadyExistsError } from '../_errors/userAlreadyExistsError'
 import { UserParentNotFoundError } from '../_errors/userParentNotFoundError'
 import { IHasher } from '../cryptography/IHasher'
+import { Injectable } from '@nestjs/common'
 
 type CreateUserUseCaseRequest = {
   name: string
@@ -15,6 +16,7 @@ type CreateUserUseCaseResponse = {
   user: User
 }
 
+@Injectable()
 export class CreateUserUseCase {
   constructor(
     private usersRepository: IUsersRepository,
