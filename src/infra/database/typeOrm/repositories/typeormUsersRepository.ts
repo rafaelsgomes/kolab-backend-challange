@@ -1,5 +1,6 @@
 import { IUsersRepository } from '@/domain/application/repositories/IUsersRepository'
 import { User } from '@/domain/entities/User'
+import { User as TypeormUser } from '../entities/User.entity'
 import { Injectable } from '@nestjs/common'
 import { Repository } from 'typeorm'
 import { TypeormUserMapper } from '../mappers/typeormUserMapper'
@@ -8,8 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm'
 @Injectable()
 export class TypeormUsersRepository implements IUsersRepository {
   constructor(
-    @InjectRepository(User)
-    private repository: Repository<User>,
+    @InjectRepository(TypeormUser)
+    private repository: Repository<TypeormUser>,
   ) {}
 
   async create(user: User): Promise<void> {
