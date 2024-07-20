@@ -14,6 +14,7 @@ import { z } from 'zod'
 import { ZodValidationPipe } from '../pipe/zodValidationPipe'
 import { CurrentUser } from '@/infra/auth/currentUser.decorator'
 import { userPayload } from '@/infra/auth/jwtStrategy'
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
 const updateUserBodySchema = z.object({
   name: z.string().max(200),
@@ -30,6 +31,26 @@ type updateUserBody = z.infer<typeof updateUserBodySchema>
 export class UpdatedUserController {
   constructor(private useCase: UpdateUserUseCase) {}
   @Put()
+  @ApiTags('Users')
+  @ApiOperation({ summary: 'Update the logged User' })
+  @ApiBody({
+    description: 'User data',
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', example: 'John Doe' },
+        userName: { type: 'string', example: 'johnDoe' },
+        password: { type: 'string', example: 'password123' },
+        parentUserId: {
+          type: 'string',
+          example: '069697a5-93c0-4254-aeb1-49e15654e8f1',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    description: 'The user has been successfully updated.',
+  })
   @HttpCode(204)
   async handle(
     @CurrentUser() user: userPayload,

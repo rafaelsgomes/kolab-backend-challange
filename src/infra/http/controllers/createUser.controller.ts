@@ -14,6 +14,12 @@ import {
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipe/zodValidationPipe'
 import { Public } from '@/infra/auth/public'
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger'
 
 const createUserBodySchema = z.object({
   name: z.string().max(200),
@@ -29,6 +35,26 @@ type createUserBody = z.infer<typeof createUserBodySchema>
 export class CreateUserController {
   constructor(private useCase: CreateUserUseCase) {}
   @Post()
+  @ApiTags('Users')
+  @ApiOperation({ summary: 'Create a new User' })
+  @ApiBody({
+    description: 'User data',
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', example: 'John Doe' },
+        userName: { type: 'string', example: 'johnDoe' },
+        password: { type: 'string', example: 'password123' },
+        parentUserId: {
+          type: 'string',
+          example: '069697a5-93c0-4254-aeb1-49e15654e8f1',
+        },
+      },
+    },
+  })
+  @ApiCreatedResponse({
+    description: 'The user has been successfully created.',
+  })
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createUserBodySchema))
   async handle(@Body() body: createUserBody) {

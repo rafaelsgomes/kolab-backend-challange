@@ -20,7 +20,7 @@ export class TypeormService
       schema: env.get('DB_SCHEMA'),
       dropSchema: false,
       entities: [User],
-      synchronize: false,
+      synchronize: true,
     })
   }
 
